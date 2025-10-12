@@ -1,0 +1,9 @@
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+README.md
+_fresh/
+node_modules/
+vendor/
