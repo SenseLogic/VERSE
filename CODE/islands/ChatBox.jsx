@@ -2,18 +2,18 @@ import { useSignal, useSignalEffect } from "@preact/signals";
 
 export default function ChatBox( props )
 {
-    const isOpen = useSignal( false );
-    const sessionId = useSignal( null );
-    const messages = useSignal( [] );
-    const inputValue = useSignal( "" );
-    const isLoading = useSignal( false );
+    let isOpen = useSignal( false );
+    let sessionId = useSignal( null );
+    let messageArray = useSignal( [] );
+    let inputValue = useSignal( "" );
+    let isLoading = useSignal( false );
 
-    const openChat = async () =>
+    let openChat = async () =>
     {
         try
         {
             isLoading.value = true;
-            const response = await fetch(
+            let response = await fetch(
                 "/api/open-chat-session",
                 {
                     method: "POST",
@@ -26,12 +26,12 @@ export default function ChatBox( props )
 
             if ( response.ok )
             {
-                const data = await response.json();
-                sessionId.value = data.sessionId;
-                messages.value = [
+                let responseData = await response.json();
+                sessionId.value = responseData.sessionId;
+                messageArray.value = [
                     {
                         role: "assistant",
-                        content: data.botMessage,
+                        content: responseData.botMessage,
                         timestamp: new Date()
                     }
                 ];
@@ -52,7 +52,7 @@ export default function ChatBox( props )
         }
     };
 
-    const closeChat = async () =>
+    let closeChat = async () =>
     {
         if ( sessionId.value )
         {
@@ -82,22 +82,22 @@ export default function ChatBox( props )
 
         isOpen.value = false;
         sessionId.value = null;
-        messages.value = [];
+        messageArray.value = [];
         inputValue.value = "";
     };
 
-    const sendMessage = async () =>
+    let sendMessage = async () =>
     {
         if ( !inputValue.value.trim() || !sessionId.value || isLoading.value )
         {
             return;
         }
 
-        const userMessage = inputValue.value.trim();
+        let userMessage = inputValue.value.trim();
         inputValue.value = "";
 
-        messages.value = [
-            ...messages.value,
+        messageArray.value = [
+            ...messageArray.value,
             {
                 role: "user",
                 content: userMessage,
@@ -108,7 +108,7 @@ export default function ChatBox( props )
         try
         {
             isLoading.value = true;
-            const response = await fetch(
+            let response = await fetch(
                 "/api/get-chat-answer",
                 {
                     method: "POST",
@@ -127,12 +127,12 @@ export default function ChatBox( props )
 
             if ( response.ok )
             {
-                const data = await response.json();
-                messages.value = [
-                    ...messages.value,
+                let responseData = await response.json();
+                messageArray.value = [
+                    ...messageArray.value,
                     {
                         role: "assistant",
-                        content: data.botMessage,
+                        content: responseData.botMessage,
                         timestamp: new Date()
                     }
                 ];
@@ -140,8 +140,8 @@ export default function ChatBox( props )
             else
             {
                 console.error( "Failed to get chat answer" );
-                messages.value = [
-                    ...messages.value,
+                messageArray.value = [
+                    ...messageArray.value,
                     {
                         role: "assistant",
                         content: "I'm sorry, I'm having trouble processing your request right now. Please try again later.",
@@ -153,8 +153,8 @@ export default function ChatBox( props )
         catch ( error )
         {
             console.error( "Error sending message:", error );
-            messages.value = [
-                ...messages.value,
+            messageArray.value = [
+                ...messageArray.value,
                 {
                     role: "assistant",
                     content: "I'm sorry, I'm having trouble processing your request right now. Please try again later.",
@@ -168,7 +168,7 @@ export default function ChatBox( props )
         }
     };
 
-    const handleKeyPress = ( e ) =>
+    let handleKeyPress = ( e ) =>
     {
         if ( e.key === "Enter" && !e.shiftKey )
         {
@@ -180,12 +180,12 @@ export default function ChatBox( props )
     useSignalEffect(
         () =>
         {
-            if ( messages.value.length > 0 )
+            if ( messageArray.value.length > 0 )
             {
-                const messagesContainer = document.getElementById( "chat-messages" );
-                if ( messagesContainer )
+                let messageContainer = document.getElementById( "chat-messages" );
+                if ( messageContainer )
                 {
-                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                    messageContainer.scrollTop = messageContainer.scrollHeight;
                 }
             }
         }
@@ -232,7 +232,7 @@ export default function ChatBox( props )
                         id="chat-messages"
                         class="chatbox-widget-message-container"
                     >
-                        {messages.value.map((message, index) => (
+                        {messageArray.value.map((message, index) => (
                             <div
                                 key={index}
                                 class={`chatbox-widget-message ${message.role}`}

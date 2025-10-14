@@ -1,4 +1,5 @@
 import { getChatAnswer } from "../../ai_service.js";
+import { getClientIp, isAllowedAndIncrement } from "../../rate_limit.js";
 
 export default async function handler( ctx )
 {
@@ -9,8 +10,8 @@ export default async function handler( ctx )
 
     try
     {
-        const body = await ctx.req.json();
-        const { sessionId, visitorMessage } = body;
+        let body = await ctx.req.json();
+        let { sessionId, visitorMessage } = body;
 
         if ( !sessionId || !visitorMessage )
         {
@@ -28,13 +29,37 @@ export default async function handler( ctx )
                 );
         }
 
-        const botMessage = await getChatAnswer( sessionId, visitorMessage );
+        let clientIp = getClientIp( ctx.req );
+        let { allowed, remaining, limit } = isAllowedAndIncrement( clientIp );
+
+        if ( !allowed )
+        {
+            let polite = `You've reached today's chat limit (${limit} messages). Please use our contact form and we'll get back to you personally.`;
+            return new Response(
+                JSON.stringify(
+                    {
+                        statusCode: 429,
+                        botMessage: polite,
+                        limit: limit,
+                        remaining: remaining
+                    }
+                    ),
+                {
+                    status: 200,
+                    headers: { "Content-Type": "application/json" }
+                }
+                );
+        }
+
+        let botMessage = await getChatAnswer( sessionId, visitorMessage );
 
         return new Response(
             JSON.stringify( 
                 {
                     statusCode: 200,
-                    botMessage: botMessage
+                    botMessage: botMessage,
+                    limit: limit,
+                    remaining: remaining
                 }
                 ),
             {

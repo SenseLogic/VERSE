@@ -1,18 +1,18 @@
-const chatSessions = new Map();
+let chatSessionByIdMap = new Map();
 
-let companyInfo = [];
+let companyInformationArray = [];
 
 export async function loadCompanyInfo()
 {
     try
     {
-        const fileContent = await Deno.readTextFile( "company_information.json" );
-        companyInfo = JSON.parse( fileContent );
+        let fileContent = await Deno.readTextFile( "company_information.json" );
+        companyInformationArray = JSON.parse( fileContent );
     }
     catch ( error )
     {
         console.error( "Failed to load company information:", error );
-        companyInfo = [];
+        companyInformationArray = [];
     }
 }
 
@@ -20,68 +20,66 @@ await loadCompanyInfo();
 
 export function createChatSession()
 {
-    const sessionId = crypto.randomUUID();
-    const session =
+    let sessionId = crypto.randomUUID();
+    let session =
         {
             id: sessionId,
-            messages: [],
+            messageArray: [],
             createdAt: new Date(),
         };
 
-    chatSessions.set( sessionId, session );
+    chatSessionByIdMap.set( sessionId, session );
     return session;
 }
 
 export function getChatSession( sessionId )
 {
-    return chatSessions.get( sessionId );
+    return chatSessionByIdMap.get( sessionId );
 }
 
 export function closeChatSession( sessionId )
 {
-    return chatSessions.delete( sessionId );
+    return chatSessionByIdMap.delete( sessionId );
 }
 
 export async function getChatAnswer( sessionId, userMessage )
 {
-    const session = getChatSession( sessionId );
+    let session = getChatSession( sessionId );
     if ( !session )
     {
         throw new Error( "Session not found" );
     }
 
-    session.messages.push(
+    session.messageArray.push(
         {
             role: "user",
             content: userMessage
         }
         );
 
-    const systemPrompt = `You are a helpful AI assistant for a company website. You have access to the following company information:
+    let systemPrompt = 
+        "You are a helpful AI assistant for a company website. You have access to the following company information:\n\n"
+        + `${companyInformationArray.map( companyInformation => `URL: ${companyInformation.url}\nContent: ${companyInformation.text}` ).join( '\n\n' )}\n\n`
+        + "Please answer questions about the company, its products, services, team, and contact information based on the provided information. If asked about something not covered in the company information, politely decline and suggest using the website's contact form for additional inquiries.\n\n"
+        + "Keep your responses helpful, professional, and concise.";
 
-${companyInfo.map( info => `URL: ${info.url}\nContent: ${info.text}` ).join( '\n\n' )}
-
-Please answer questions about the company, its products, services, team, and contact information based on the provided information. If asked about something not covered in the company information, politely decline and suggest using the website's contact form for additional inquiries.
-
-Keep your responses helpful, professional, and concise.`;
-
-    const messages = [
+    let messageArray = [
         {
             role: "system",
             content: systemPrompt
         },
-        ...session.messages
+        ...session.messageArray
     ];
 
     try
     {
-        const openRouterApiKey = Deno.env.get( "OPENROUTER_API_KEY" );
+        let openRouterApiKey = Deno.env.get( "OPENROUTER_API_KEY" );
         if ( !openRouterApiKey )
         {
             throw new Error( "OPENROUTER_API_KEY environment variable not set" );
         }
 
-        const response = await fetch(
+        let response = await fetch(
             "https://openrouter.ai/api/v1/chat/completions",
             {
                 method: "POST",
@@ -95,7 +93,7 @@ Keep your responses helpful, professional, and concise.`;
                 body: JSON.stringify(
                     {
                         model: "meta-llama/llama-3.3-8b-instruct:free",
-                        messages: messages,
+                        messages: messageArray,
                         max_tokens: 500,
                         temperature: 0.7,
                     }
@@ -108,10 +106,10 @@ Keep your responses helpful, professional, and concise.`;
             throw new Error( `OpenRouter API error: ${response.status} ${response.statusText}` );
         }
 
-        const data = await response.json();
-        const botMessage = data.choices[0]?.message?.content || "I'm sorry, I couldn't generate a response.";
+        let data = await response.json();
+        let botMessage = data.choices[0]?.message?.content || "I'm sorry, I couldn't generate a response.";
 
-        session.messages.push(
+        session.messageArray.push(
             {
                 role: "assistant",
                 content: botMessage
@@ -123,8 +121,8 @@ Keep your responses helpful, professional, and concise.`;
     catch ( error )
     {
         console.error( "Error getting chat answer:", error );
-        const errorMessage = "I'm sorry, I'm having trouble processing your request right now. Please try again later or use our contact form.";
-        session.messages.push(
+        let errorMessage = "I'm sorry, I'm having trouble processing your request right now. Please try again later or use our contact form.";
+        session.messageArray.push(
             {
                 role: "assistant",
                 content: errorMessage
