@@ -1,5 +1,5 @@
-import { getChatAnswer } from "../../ai_service.js";
-import { getClientIp, isAllowedAndIncrement } from "../../rate_limit.js";
+import { getChatAnswer } from "../../services/ai_service.js";
+import { getClientIp, isAllowedAndIncrement } from "../../services/throttling_service.js";
 
 export default async function handler( ctx )
 {
@@ -16,7 +16,7 @@ export default async function handler( ctx )
         if ( !sessionId || !visitorMessage )
         {
             return new Response(
-                JSON.stringify( 
+                JSON.stringify(
                     {
                         statusCode: 400,
                         error: "Missing sessionId or visitorMessage"
@@ -35,6 +35,7 @@ export default async function handler( ctx )
         if ( !allowed )
         {
             let polite = `You've reached today's chat limit (${limit} messages). Please use our contact form and we'll get back to you personally.`;
+
             return new Response(
                 JSON.stringify(
                     {
@@ -54,7 +55,7 @@ export default async function handler( ctx )
         let botMessage = await getChatAnswer( sessionId, visitorMessage );
 
         return new Response(
-            JSON.stringify( 
+            JSON.stringify(
                 {
                     statusCode: 200,
                     botMessage: botMessage,
@@ -70,8 +71,9 @@ export default async function handler( ctx )
     catch ( error )
     {
         console.error( "Error getting chat answer:", error );
+
         return new Response(
-            JSON.stringify( 
+            JSON.stringify(
                 {
                     statusCode: 500,
                     error: "Failed to get chat answer"

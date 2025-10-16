@@ -26,5 +26,5 @@ export default function Home( ctx )
                 </p>
             </div>
         </div>
-    );
+        );
 }

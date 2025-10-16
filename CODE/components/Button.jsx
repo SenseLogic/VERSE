@@ -5,5 +5,5 @@ export function Button( props )
             {...props}
             class="button"
         />
-    );
+        );
 }

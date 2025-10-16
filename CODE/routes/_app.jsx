@@ -15,5 +15,5 @@ export default function App( { Component } )
                 <ChatBox />
             </body>
         </html>
-    );
+        );
 }

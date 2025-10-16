@@ -1,22 +1,22 @@
 [
   {
-    "url": "https://example.com/about",
+    "url": "https://verse-project.com/about",
     "text": "Our company was founded in 2010 with a mission to revolutionize the tech industry. We specialize in creating innovative software solutions that help businesses streamline their operations and increase productivity. Our team consists of over 100 experienced developers, designers, and business analysts who are passionate about delivering high-quality products."
   },
   {
-    "url": "https://example.com/services",
+    "url": "https://verse-project.com/services",
     "text": "We offer a comprehensive range of services including custom software development, web application design, mobile app development, cloud solutions, and digital transformation consulting. Our services are tailored to meet the specific needs of each client, from startups to enterprise-level organizations. We use cutting-edge technologies and follow industry best practices to ensure optimal results."
   },
   {
-    "url": "https://example.com/products",
+    "url": "https://verse-project.com/products",
     "text": "Our flagship product is a cloud-based project management platform that helps teams collaborate more effectively. We also offer a customer relationship management (CRM) system, an e-commerce solution, and various API integrations. All our products are designed with user experience in mind and are regularly updated with new features based on customer feedback."
   },
   {
-    "url": "https://example.com/contact",
-    "text": "You can reach us through multiple channels. Our main office is located at 123 Tech Street, Innovation City, IC 12345. You can call us at (555) 123-4567 or email us at info@example.com. We also have a contact form on our website for general inquiries. Our customer support team is available 24/7 to assist with any questions or issues you may have."
+    "url": "https://verse-project.com/contact",
+    "text": "You can reach us through multiple channels. Our main office is located at 123 Tech Street, Innovation City, IC 12345. You can call us at (555) 123-4567 or email us at info@verse-project.com. We also have a contact form on our website for general inquiries. Our customer support team is available 24/7 to assist with any questions or issues you may have."
   },
   {
-    "url": "https://example.com/team",
+    "url": "https://verse-project.com/team",
     "text": "Our leadership team includes CEO John Smith, who has over 20 years of experience in the tech industry, CTO Sarah Johnson, a former software architect at major tech companies, and COO Mike Davis, who specializes in business operations and strategy. Our diverse team brings together expertise from various industries and backgrounds, creating a dynamic and innovative work environment."
   }
 ]

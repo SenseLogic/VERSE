@@ -6,7 +6,7 @@ export async function loadCompanyInfo()
 {
     try
     {
-        let fileContent = await Deno.readTextFile( "company_information.json" );
+        let fileContent = await Deno.readTextFile( "data/company_information.json" );
         companyInformationArray = JSON.parse( fileContent );
     }
     catch ( error )
@@ -29,6 +29,7 @@ export function createChatSession()
         };
 
     chatSessionByIdMap.set( sessionId, session );
+
     return session;
 }
 
@@ -57,10 +58,10 @@ export async function getChatAnswer( sessionId, userMessage )
         }
         );
 
-    let systemPrompt = 
+    let systemPrompt =
         "You are a helpful AI assistant for a company website. You have access to the following company information:\n\n"
         + `${companyInformationArray.map( companyInformation => `URL: ${companyInformation.url}\nContent: ${companyInformation.text}` ).join( '\n\n' )}\n\n`
-        + "Please answer questions about the company, its products, services, team, and contact information based on the provided information. If asked about something not covered in the company information, politely decline and suggest using the website's contact form for additional inquiries.\n\n"
+        + "Please answer questions about the company, its products, services, team, and contact information based on the provided information. When discussing the company's services, products, or offerings, always speak in first person using 'We offer', 'We provide', 'Our team', etc. instead of third person language like 'They offer' or 'The company provides'. If asked about something not covered in the company information, politely decline and suggest using the website's contact form for additional inquiries.\n\n"
         + "Keep your responses helpful, professional, and concise.";
 
     let messageArray = [
@@ -87,7 +88,7 @@ export async function getChatAnswer( sessionId, userMessage )
                     {
                         "Authorization": `Bearer ${openRouterApiKey}`,
                         "Content-Type": "application/json",
-                        "HTTP-Referer": "https://example.com",
+                        "HTTP-Referer": "https://verse-project.com",
                         "X-Title": "Company Chatbot",
                     },
                 body: JSON.stringify(

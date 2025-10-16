@@ -1,9 +1,11 @@
-export const handler = {
-    GET( ctx )
+export let handler =
     {
-        const name = ctx.params.name;
-        return new Response(
-            `Hello, ${name.charAt(0).toUpperCase() + name.slice(1)}!`,
-            );
-    },
-};
+        GET( ctx )
+        {
+            let name = ctx.params.name;
+
+            return new Response(
+                `Hello, ${name.charAt(0).toUpperCase() + name.slice(1)}!`,
+                );
+        },
+    };

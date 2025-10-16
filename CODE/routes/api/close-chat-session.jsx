@@ -1,4 +1,4 @@
-import { closeChatSession } from "../../ai_service.js";
+import { closeChatSession } from "../../services/ai_service.js";
 
 export default async function handler( ctx )
     {
@@ -9,8 +9,8 @@ export default async function handler( ctx )
 
         try
         {
-            const body = await ctx.req.json();
-            const { sessionId } = body;
+            let body = await ctx.req.json();
+            let { sessionId } = body;
 
             if ( !sessionId )
             {
@@ -28,10 +28,10 @@ export default async function handler( ctx )
                     );
             }
 
-            const success = closeChatSession( sessionId );
+            let success = closeChatSession( sessionId );
 
             return new Response(
-                JSON.stringify( 
+                JSON.stringify(
                     {
                         statusCode: success ? 200 : 404
                     }
@@ -44,8 +44,9 @@ export default async function handler( ctx )
         catch ( error )
         {
             console.error( "Error closing chat session:", error );
+
             return new Response(
-                JSON.stringify( 
+                JSON.stringify(
                     {
                         statusCode: 500,
                         error: "Failed to close chat session"
