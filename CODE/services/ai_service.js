@@ -1,8 +1,12 @@
-let chatSessionByIdMap = new Map();
+// -- VARIABLES
 
+let chatSessionByIdMap = new Map();
 let companyInformationArray = [];
 
-export async function loadCompanyInfo()
+// -- FUNCTIONS
+
+export async function loadCompanyInfo(
+    )
 {
     try
     {
@@ -16,9 +20,10 @@ export async function loadCompanyInfo()
     }
 }
 
-await loadCompanyInfo();
+// ~~
 
-export function createChatSession()
+export function createChatSession(
+    )
 {
     let sessionId = crypto.randomUUID();
     let session =
@@ -33,17 +38,30 @@ export function createChatSession()
     return session;
 }
 
-export function getChatSession( sessionId )
+// ~~
+
+export function getChatSession(
+    sessionId
+    )
 {
     return chatSessionByIdMap.get( sessionId );
 }
 
-export function closeChatSession( sessionId )
+// ~~
+
+export function closeChatSession(
+    sessionId
+    )
 {
     return chatSessionByIdMap.delete( sessionId );
 }
 
-export async function getChatAnswer( sessionId, userMessage )
+// ~~
+
+export async function getChatAnswer(
+    sessionId,
+    userMessage
+    )
 {
     let session = getChatSession( sessionId );
     if ( !session )
@@ -133,3 +151,7 @@ export async function getChatAnswer( sessionId, userMessage )
         return errorMessage;
     }
 }
+
+// -- STATEMENTS
+
+await loadCompanyInfo();
