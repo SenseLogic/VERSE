@@ -78,7 +78,7 @@ export async function getChatAnswer(
 
     let systemPrompt =
         "You are a helpful AI assistant for a company website. You have access to the following company information:\n\n"
-        + `${companyInformationArray.map( companyInformation => `URL: ${companyInformation.url}\nContent: ${companyInformation.text}` ).join( '\n\n' )}\n\n`
+        + `${companyInformationArray.map( companyInformation => `URL: ${companyInformation.url}\nContent: ${companyInformation.text}` ).join( "\n\n" )}\n\n`
         + "Please answer questions about the company, its products, services, team, and contact information based on the provided information. When discussing the company's services, products, or offerings, always speak in first person using 'We offer', 'We provide', 'Our team', etc. instead of third person language like 'They offer' or 'The company provides'. If asked about something not covered in the company information, politely decline and suggest using the website's contact form for additional inquiries.\n\n"
         + "Keep your responses helpful, professional, and concise.";
 
